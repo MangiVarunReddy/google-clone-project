@@ -1,30 +1,36 @@
 import React, { createContext, useContext, useState } from "react";
 
 const ResultContext = createContext();
-const baseURL = "https://google-search3.p.rapidapi.com/api/v1";
+const baseURL = "https://google-search74.p.rapidapi.com/";
 
 export const ResultContextProvider = ({ children }) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const getResult = async (type) => {
+  const getResults = async (type) => {
     setIsLoading(true);
-    const response = await fetch(`${baseURL}${type}`, {
+    const queryParams = new URLSearchParams({
+      query: "onepiece photos",
+      limit: "10",
+      related_keywords: "true",
+    });
+    const response = await fetch(`${baseURL}?${queryParams.toString()}`, {
       method: "GET",
       headers: {
-        "x-rapidapi-host": "google-search3.p.rapidapi.com",
-        "x-rapidapi-key": process.env.REACT_APP_API_KEY,
+        "X-RapidAPI-Key": "ec4c13026cmsh90a93bd3a3346b7p1bf76fjsn155acdad328e",
+        "X-RapidAPI-Host": "google-search74.p.rapidapi.com",
       },
     });
     const data = await response.json();
+    console.log(data);
     setSearchTerm(data);
     setResults(data);
     setIsLoading(false);
   };
   return (
     <ResultContext.Provider
-      value={{ getResult, results, isLoading, searchTerm, setSearchTerm }}
+      value={{ getResults, results, searchTerm, setSearchTerm, isLoading }}
     >
       {children}
     </ResultContext.Provider>
